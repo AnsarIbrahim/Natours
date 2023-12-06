@@ -1,0 +1,15 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "This is a Project build by Express and Node.js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Ansar Ibrahim",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

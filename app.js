@@ -26,6 +26,8 @@ app.use(morgan('dev'));
 
 app.use(express.json());
 
+app.use(express.static(`${__dirname}/public`));
+
 // ROUTES
 app.param('id', checkId);
 app.use('/api/v1/tours', tourRouter);

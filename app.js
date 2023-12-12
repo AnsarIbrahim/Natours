@@ -84,6 +84,16 @@ const deleteTour = (req, res) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
+// app.use((req, res, next) => {
+//   console.log('Hello from the middleware👋');
+//   next();
+// });
+
+// app.use((req, res, next) => {
+//   req.requestTime = new Date().toISOString();
+//   next();
+// });
+
 app.param('id', checkId);
 
 app.route('/api/v1/tours').get(getAllTours).post(createTour);

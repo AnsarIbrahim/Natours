@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
 
 // Route Handlers
@@ -17,7 +17,7 @@ exports.getAllTours = (req, res) => {
 
 exports.createTour = (req, res) => {
   exports.newId = tours[tours.length - 1].id + 1;
-  exports.newTour = Object.assign({ id: newId }, req.body);
+  exports.newTour = { id: newId, ...req.body };
 
   tours.push(newTour);
 
@@ -31,7 +31,7 @@ exports.createTour = (req, res) => {
           tour: newTour,
         },
       });
-    }
+    },
   );
 };
 

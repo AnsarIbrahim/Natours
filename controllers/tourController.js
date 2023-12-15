@@ -3,7 +3,14 @@ const Tour = require('../models/tourModel');
 // Route Handlers
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    const queryObj = { ...req.query };
+    const excludeFelds = ['page', 'sort', 'limit', 'fields'];
+    excludeFelds.forEach((el) => delete queryObj[el]);
+
+    const query = Tour.find(queryObj);
+
+    const tours = await query;
+
     res.status(200).json({
       status: 'success',
       results: tours.length,

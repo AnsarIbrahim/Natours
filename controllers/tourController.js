@@ -1,5 +1,16 @@
 const Tour = require('../models/tourModel');
 
+exports.aliasTopTours = (req, res, next) => {
+  // Add some query parameters to req.query
+  // This will be handled by getAllTours()
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+
+  // Call next() to pass control to the next middleware function
+  next();
+};
+
 // Route Handlers
 exports.getAllTours = async (req, res) => {
   try {

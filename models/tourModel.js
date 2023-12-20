@@ -107,22 +107,20 @@ tourSchema.pre('save', (next) => {
 // });
 
 // QUERY MIDDLEWARE: runs before .find() and .findOne()
-tourSchema.pre(/^find/, (next) => {
+tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
   next();
 });
 
-tourSchema.post(/^find/, (docs, next) => {
+tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-  console.log(docs);
   next();
 });
 
 // AGGREGATION MIDDLEWARE: runs before .aggregate()
-tourSchema.pre('aggregate', (next) => {
+tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
   next();
 });
 

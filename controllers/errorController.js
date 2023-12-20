@@ -36,6 +36,14 @@ const handleCastErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleDuplicateFieldsDB = (err) => {
+  // const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const value = err.keyValue.name;
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+
+  return new AppError(message, 400);
+};
+
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500; // 500 = Internal Server Error
   err.status = err.status || 'error';
@@ -45,6 +53,7 @@ module.exports = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === 'production') {
     // let error = { ...err };
     if (err.name === 'CastError') err = handleCastErrorDB(err);
+    if (err.code === 11000) err = handleDuplicateFieldsDB(err);
 
     sendErrorProd(err, res);
   }

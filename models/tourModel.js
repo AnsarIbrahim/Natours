@@ -79,6 +79,31 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number], // Array of numbers
+      address: String,
+      description: String,
+    },
+    locations: [
+      // Array of objects
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number], // Array of numbers
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -91,8 +116,15 @@ tourSchema.virtual('durationWeeks').get(function () {
 });
 
 // Document middleware: runs before .save() and .create()
-tourSchema.pre('save', (next) => {
-  this.slug = slugify(this.name, { lower: true });
+// tourSchema.pre('save', (next) => {
+//   this.slug = slugify(this.name, { lower: true });
+//   next();
+// });
+
+tourSchema.pre('save', function (next) {
+  if (typeof this.name === 'string') {
+    this.slug = slugify(this.name, { lower: true });
+  }
   next();
 });
 

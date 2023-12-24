@@ -12,6 +12,7 @@ const reviewSchema = new mongoose.Schema(
       required: [true, 'A review must have a rating'],
       min: [1, 'A review must have a rating above or equal to 1.0'],
       max: [5, 'A review must have a rating below or equal to 5.0'],
+      set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.66666, 47, 4.7
     },
     createdAt: {
       type: Date,
@@ -37,6 +38,9 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
+
+// Indexes
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 reviewSchema.pre(/^find/, function (next) {
   //   this.populate({

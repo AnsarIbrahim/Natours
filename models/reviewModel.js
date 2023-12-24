@@ -55,6 +55,58 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
+// Static method
+
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  // this points to the current model
+  // this.aggregate([
+  //   {
+  //     $match: { tour: tourId },
+  //   },
+  //   {
+  //     $group: {
+  //       _id: '$tour',
+  //       nRating: { $sum: 1 },
+  //       avgRating: { $avg: '$rating' },
+  //     },
+  //   },
+  // ]);
+
+  // The above code will return an array of objects, but we want to update the tour document
+  // with the calculated average rating and the number of ratings. So we will use the following
+  // code instead:
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        // _id: '$tour',
+        _id: null,
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  // console.log(stats);
+
+  // Update the tour document
+  await this.model('Tour').findByIdAndUpdate(tourId, {
+    ratingsQuantity: stats[0].nRating,
+    ratingsAverage: stats[0].avgRating.toFixed(2),
+  });
+};
+
+reviewSchema.post('save', function () {
+  // this points to current review
+  // this.constructor points to the model that created the document
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+// findByIdAndUpdate
+// findByIdAndDelete
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;

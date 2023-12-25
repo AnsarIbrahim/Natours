@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
+const AppError = require('../utils/appError');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -117,6 +118,46 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     results: plan.length,
     data: {
       plan,
+    },
+  });
+});
+
+// GeoSpatial Query
+
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  // /tours-within/:distance/center/:latlng/unit/:unit
+  // /tours-within/233/center/-40,45/unit/mi
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  // Convert distance to radians
+  // Divide distance by radius of the Earth
+  // Radius of the Earth = 3963.2 miles or 6378.1 kilometers
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  // If there is no lat or lng, throw an error
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400,
+      ),
+    );
+  }
+
+  // GeoSpatial Query
+  // Find all documents within a certain distance from a starting point
+  // GeoJSON: { type: 'Point', coordinates: [lng, lat] }
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      data: tours,
     },
   });
 });

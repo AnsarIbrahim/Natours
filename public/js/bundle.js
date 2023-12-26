@@ -12229,7 +12229,7 @@ var _login = require("./login");
 
 // DOM ELEMENTS
 var mapContainer = document.getElementById('map');
-var loginForm = document.querySelector('.form');
+var loginForm = document.querySelector('.form--login');
 var logoutButton = document.querySelector('.nav__el--logout');
 
 // DELEGATION

@@ -5,7 +5,7 @@ import { login, logout } from './login';
 
 // DOM ELEMENTS
 const mapContainer = document.getElementById('map');
-const loginForm = document.querySelector('.form');
+const loginForm = document.querySelector('.form--login');
 const logoutButton = document.querySelector('.nav__el--logout');
 
 // DELEGATION

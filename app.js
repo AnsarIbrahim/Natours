@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const mongoSanitze = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const { contentSecurityPolicy } = require('helmet');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -71,6 +72,20 @@ app.use((req, res, next) => {
   // console.log(req.headers);
   next();
 });
+
+app.use(
+  contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://api.mapbox.com', 'blob:', "'self'"],
+      connectSrc: [
+        "'self'",
+        'https://api.mapbox.com',
+        'https://events.mapbox.com',
+      ],
+    },
+  }),
+);
 
 // ROUTES
 app.use('/', viewRouter);

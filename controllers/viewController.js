@@ -66,5 +66,4 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     title: 'Your account',
     user: updatedUser,
   });
-  next();
 });

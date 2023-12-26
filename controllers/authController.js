@@ -77,7 +77,6 @@ exports.logout = (req, res) => {
     httpOnly: true,
   });
   res.status(200).json({ status: 'success' });
-  res.redirect('/');
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -90,10 +89,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
-  } else {
-    return next(
-      new AppError('You are not logged in! Please log in to get access.', 401),
-    );
   }
 
   if (!token) {

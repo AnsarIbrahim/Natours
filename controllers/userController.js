@@ -20,7 +20,16 @@ const factory = require('./handlerFactory');
 
 const multerStorage = multer.memoryStorage();
 
-const upload = multer({ storage: multerStorage });
+const multerFilter = (req, file, cb) => {
+  // Test if the uploaded file is an image
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
 // Middleware
 exports.uploadUserPhoto = upload.single('photo');

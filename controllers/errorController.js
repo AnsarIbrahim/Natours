@@ -1,6 +1,7 @@
 const AppError = require('../utils/appError');
 
 const sendErrorDev = (err, req, res) => {
+  if (res.headersSent) return;
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -16,6 +17,7 @@ const sendErrorDev = (err, req, res) => {
 };
 
 const sendErrorProd = (err, req, res) => {
+  if (res.headersSent) return;
   // API
   if (req.originalUrl.startsWith('/api')) {
     // Operational, trusted error: send message to client
